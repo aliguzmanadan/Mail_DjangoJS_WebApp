@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
+
+
 function compose_email() {
 
   // Show compose view and hide other views
@@ -54,7 +56,7 @@ function compose_email() {
     //Put response in a JSON form a
     .then(response => response.json())
 
-    //check if there is an errro
+    //check if there is an error
     .then(result => {
         const message = result.error;
 
@@ -67,8 +69,9 @@ function compose_email() {
           console.log(message);
         }
         
-        //if not load user's sent mailbox after sending email.
+        //if not, clear eventual error message and load user's sent mailbox after sending email.
         else{
+          document.querySelector("#compose-error").innerHTML = "";
           load_mailbox('sent');
           console.log(result);
         }
@@ -89,4 +92,44 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  //Getting emails list for this mailbox
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+    //print array in console
+    console.log(emails);
+
+    //display each email
+    emails.forEach(element => display_email_mailbox(element));
+  })
+}
+
+function display_email_mailbox(element){
+  let div_email = document.createElement('div');
+  div_email.addEventListener('click', () => display_email_full(element));
+
+  //setting grey back ground if email is read, white otherwise
+  if (element.read){
+    div_email.className = "card text-white bg-secondary mb-3";
+  }else{
+    div_email.className = "card text-dark bg-light mb-3";
+  }
+  
+  //setting content of the display
+  let header = document.createElement('div');
+  header.className = "card-header";
+  header.innerHTML = `<h6> From: ${element['sender']}  <span style="padding-left: 100px"> Date:  ${element['timestamp']}</span> </h6>`;
+
+  let body = document.createElement('div');
+  body.className = "card-body"
+  body.innerHTML = `Subject: ${element['subject']}`;
+
+  div_email.append(header, body);
+
+  document.querySelector("#emails-view").append(div_email);
+}
+
+function display_email_full(element){
+  console.log("This element has been clicked");
 }
