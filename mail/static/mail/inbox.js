@@ -12,10 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+/////////////////////////////////////////
+
 function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#individual-email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -34,6 +37,7 @@ function compose_email() {
     else{
         document.querySelector('#compose-submit').disabled = true;
     }
+  }
     
   //Handlig the submission of the form
   document.querySelector("#compose-form").onsubmit = () => {
@@ -42,6 +46,7 @@ function compose_email() {
     const recipients = document.querySelector('#compose-recipients').value;
     const subject = document.querySelector('#compose-subject').value;
     const body = document.querySelector('#compose-body').value;
+    console.log(typeof body);
 
     //Sending an email via POST request to the API
     fetch('/emails',{
@@ -80,7 +85,7 @@ function compose_email() {
     //Stop form from submitting
     return false;
   }
-};
+  
 
 }
 
@@ -88,6 +93,7 @@ function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#individual-email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
@@ -98,7 +104,7 @@ function load_mailbox(mailbox) {
   .then(response => response.json())
   .then(emails => {
     //print array in console
-    console.log(emails);
+    //console.log(emails);
 
     //display each email
     emails.forEach(element => display_email_mailbox(element));
@@ -106,6 +112,8 @@ function load_mailbox(mailbox) {
 }
 
 function display_email_mailbox(element){
+
+  //creating div for each email and add event listener for when it is clicked
   let div_email = document.createElement('div');
   div_email.addEventListener('click', () => display_email_full(element));
 
@@ -131,5 +139,29 @@ function display_email_mailbox(element){
 }
 
 function display_email_full(element){
-  console.log("This element has been clicked");
+
+  // Show the individual-email-view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#individual-email-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'none';
+
+  //filling elements of the view
+  document.querySelector('#individual-email-sender').innerHTML = `From: ${element.sender}`;
+  document.querySelector('#individual-email-recipients').innerHTML = "To:";
+  element.recipients.forEach(recipient => {
+    document.querySelector('#individual-email-recipients').append(` ${recipient};`)
+  });
+  document.querySelector('#individual-email-subject').innerHTML = `Subject: ${element.subject}`;
+  document.querySelector('#individual-email-time').innerHTML = `Time: ${element.timestamp}`;
+  document.querySelector('#individual-email-body').innerHTML = `${element.body}`;
+
+  //Mark email as read
+  fetch(`/emails/${element.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  })
+
+  //console.log(element)
 }

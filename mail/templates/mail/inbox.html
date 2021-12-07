@@ -14,6 +14,24 @@
     <div id="emails-view">
     </div>
 
+    <div id="individual-email-view">
+        <div class="card" id="individual-email-sender">
+            From: 
+        </div>
+        <div class="card" id="individual-email-recipients">
+            To: 
+        </div>
+        <div class="card" id="individual-email-subject">
+            Subject: 
+        </div>
+        <div class="card" id="individual-email-time" >
+            Time: 
+        </div>
+        <div class="card" id="individual-email-body" style= 'margin-top: 20px; white-space: pre-wrap;'>
+            
+        </div>
+    </div>
+
     <div id="compose-view">
         <h3>New Email</h3>
 
@@ -30,7 +48,7 @@
             <div class="form-group">
                 <input class="form-control" id="compose-subject" placeholder="Subject">
             </div>
-            <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
+            <textarea class="form-control" id="compose-body" placeholder="Body" style= "white-space: pre-wrap;"></textarea>
             <input type="submit" id="compose-submit" class="btn btn-primary"/>
         </form>
     </div>
