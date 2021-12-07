@@ -89,6 +89,9 @@ function compose_email() {
 
 }
 
+
+/////////////////////////////////////////
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
@@ -110,6 +113,11 @@ function load_mailbox(mailbox) {
     emails.forEach(element => display_email_mailbox(element));
   })
 }
+
+
+
+
+/////////////////////////////////////////
 
 function display_email_mailbox(element){
 
@@ -137,6 +145,10 @@ function display_email_mailbox(element){
 
   document.querySelector("#emails-view").append(div_email);
 }
+
+
+
+/////////////////////////////////////////
 
 function display_email_full(element){
 
