@@ -110,7 +110,7 @@ function load_mailbox(mailbox) {
     //console.log(emails);
 
     //display each email
-    emails.forEach(element => display_email_mailbox(element));
+    emails.forEach(element => display_email_mailbox(element, mailbox));
   })
 }
 
@@ -119,11 +119,11 @@ function load_mailbox(mailbox) {
 
 /////////////////////////////////////////
 
-function display_email_mailbox(element){
+function display_email_mailbox(element, mailbox){
 
   //creating div for each email and add event listener for when it is clicked
   let div_email = document.createElement('div');
-  div_email.addEventListener('click', () => display_email_full(element));
+  div_email.addEventListener('click', () => display_email_full(element, mailbox));
 
   //setting grey back ground if email is read, white otherwise
   if (element.read){
@@ -150,7 +150,7 @@ function display_email_mailbox(element){
 
 /////////////////////////////////////////
 
-function display_email_full(element){
+function display_email_full(element, mailbox){
 
   // Show the individual-email-view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -167,6 +167,30 @@ function display_email_full(element){
   document.querySelector('#individual-email-time').innerHTML = `Time: ${element.timestamp}`;
   document.querySelector('#individual-email-body').innerHTML = `${element.body}`;
 
+  //empty button-container div by default
+  document.querySelector('#button-container').innerHTML= "";
+
+  //Set archive button if mailbox is not 'sent'
+  if(mailbox !== 'sent'){
+    const archive_button = document.createElement('button');
+    archive_button.className = "btn btn-outline-secondary btn-sm";
+    if (element.archived === false){
+      archive_button.innerHTML = "Archive";
+    }else{
+      archive_button.innerHTML = "Unarchive";
+    }
+    archive_button.addEventListener('click', () => archive_action(element));
+    document.querySelector('#button-container').append(archive_button);
+  }
+
+   //Set reply button
+   const reply_button = document.createElement('button');
+   reply_button.className = "btn btn-outline-secondary btn-sm";
+   reply_button.innerHTML = "Reply";
+   reply_button.addEventListener('click', () => reply(element));
+   document.querySelector('#button-container').append(reply_button);
+   
+  
   //Mark email as read
   fetch(`/emails/${element.id}`, {
     method: 'PUT',
@@ -176,4 +200,32 @@ function display_email_full(element){
   })
 
   //console.log(element)
+}
+
+
+/////////////////////////////////////////
+
+function archive_action(element){
+    fetch(`/emails/${element.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: !element.archived
+      })
+    })
+    .then(() =>{
+      //After archiving/unarchiving load inbox view
+      load_mailbox('inbox');
+    }
+    )
+}
+
+
+/////////////////////////////////////////
+
+function reply(element){
+  compose_email();
+  // Prefill out composition fields
+  document.querySelector('#compose-recipients').value = 'wdcwe';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
 }
