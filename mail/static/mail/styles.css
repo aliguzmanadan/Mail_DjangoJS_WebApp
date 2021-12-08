@@ -7,3 +7,16 @@ textarea {
     margin-left: 10px;
 }
 
+#compose-body{
+    white-space: pre-wrap;
+}
+
+
+#individual-email-body{
+    margin-top: 20px; 
+    white-space: pre-wrap;
+}
+
+#compose-submit{
+    margin-top: 10px;
+}

@@ -223,9 +223,22 @@ function archive_action(element){
 /////////////////////////////////////////
 
 function reply(element){
+
+  //First render  email composition form
   compose_email();
-  // Prefill out composition fields
-  document.querySelector('#compose-recipients').value = 'wdcwe';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+
+  // Prefill recipients
+  document.querySelector('#compose-recipients').value = element.sender;
+  document.querySelector('#compose-submit').disabled = false;
+
+  //prefill subject
+  if(element.subject.startsWith("Re:")){
+    document.querySelector('#compose-subject').value = element.subject;
+  }else{
+    document.querySelector('#compose-subject').value = `Re: ${element.subject}`;
+  }
+
+  //prefil body
+  const line = `\n \n On ${element.timestamp} ${element.sender} wrote: \n \n`
+  document.querySelector('#compose-body').value = `${line} ${element.body}`;
 }
